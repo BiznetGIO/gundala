@@ -1,7 +1,7 @@
-from gundala import EPP
-from config import config, contacts, namespaces
+from gundala import EPP, Contact
+from config import contacts, config
 
-epp = EPP.EPP(**config)
+epp = EPP(**config)
 
-contact = EPP.Contact(epp, 7654322)
+contact = Contact(epp, 7654322)
 print(contact.info())
