@@ -127,7 +127,7 @@ class EPPObject:
         self.epp = epp
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return str(self).encode('utf-8')
 
     def __getitem__(self, key):
         try:
@@ -143,7 +143,7 @@ class Contact(EPPObject):
         for k, v in kwargs.items():
             setattr(self, k, v)
 
-    def __unicode__(self):
+    def __str__(self):
         try:
             self.name != ''
             return "[%(handle)s] %(name)s, %(street)s, %(pc)s %(city)s (%(cc)s)" % self
