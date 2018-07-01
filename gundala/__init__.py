@@ -125,8 +125,9 @@ class EPP(asyncore.dispatcher):
         return self.cmd(cmd)
 
 
-class EPPObject:
+class EPPObject(asyncore.dispatcher):
     def __init__(self, epp):
+        asyncore.dispatcher.__init__(self)
         self.epp = epp
 
     def __str__(self):
@@ -159,9 +160,13 @@ class Contact(EPPObject):
         return res.resdata.find('contact:id').get('avail') == 'true'
 
     def create(self):
-        cmd = contact.create % self
-        res = self.epp.cmd(cmd).resdata
-        return res.find('contact:id').text
+        try:
+            cmd = contact.create % self
+            res = self.epp.cmd(cmd).resdata
+            return res.find('contact:id').text
+        except Exception as e:
+            pass
+
 
     def info(self):
         cmd = contact.info % self
