@@ -202,7 +202,7 @@ class Domain(EPPObject):
         if not res:
             # exception would be more fitting
             return False
-        return res.resdata.find('domain:name').get('avail') == 'true'
+        return res.resdata.find('domain:name').get('avail') == '1'
 
     def create(self, contacts, ns):
         # print(self.token())
@@ -240,7 +240,10 @@ class Domain(EPPObject):
         cmd = domain.info % self.domain
         res = self.epp.cmd(cmd)
         # print(res)
-        return res.resdata.find('domain:pw').text
+        if res.resdata:
+            return res.resdata.find('domain:pw').text
+        else:
+            return 'Get Token failed'
 
     def transfer(self, token):
         cmd = domain.transfer % dict({
