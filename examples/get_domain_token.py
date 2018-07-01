@@ -1,7 +1,7 @@
-from gundala import EPP
+from gundala import EPP, Domain
 from config import config
 
-epp = EPP.EPP(**config)
+epp = EPP(**config)
 """ Get the token for a given domain """
-domain = EPP.Domain(epp, 'segokucing.id')
+domain = Domain(epp, 'segokucing.id')
 print(domain.token())
