@@ -1,11 +1,9 @@
 from gundala import EPP, Contact
-from config import config, contacts, namespaces
-
-epp = EPP(**config)
+from config import config, contacts, nameserver
 
 data = {
-    'id': '7654322',
-    'name': 'Admin 2',
+    'id': '7654323',
+    'name': 'Admin 3',
     'org': 'Biznetgio',
     'street': 'Jl. Sudirman',
     'city': 'Jakarta Pusat',
@@ -16,6 +14,7 @@ data = {
     'fax': '',
     'email': 'admin@biznetgio.com',
 }
-
+epp = EPP(**config)
+""" Create new contact. """
 contact = Contact(epp, False, **data)
 print(contact.create())

@@ -1,6 +1,7 @@
 from gundala import EPP, Domain
-from config import config, contacts, namespaces
+from config import config, contacts, nameserver
 
 epp = EPP(**config)
-domain = Domain(epp, 'hatiku.id')
+""" Transfer domain """
+domain = Domain(epp, 'gundala.id')
 domain.transfer(domain.token())
