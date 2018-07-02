@@ -4,7 +4,7 @@ EPP Library
 
 ## Installing
 
-At the time g only undala support Python3 or newer.
+At the time gundala only support Python3 or newer.
 
 ``` bash
 pip3 install -e .
