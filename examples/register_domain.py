@@ -1,6 +1,7 @@
 from gundala import EPP, Domain
-from config import config, contacts, namespaces
+from config import config, contacts, nameserver
 
 epp = EPP(**config)
-domain = Domain(epp, 'hatiku.id')
-domain.create(contacts, namespaces[0])
+""" Register domain """
+domain = Domain(epp, 'gundala.id')
+domain.create(contacts, nameserver[0])
