@@ -4,7 +4,6 @@ from codecs import open
 from os.path import abspath, dirname, join
 from subprocess import call
 from setuptools import Command, find_packages, setup
-from gundala import __version__
 
 this_dir = abspath(dirname(__file__))
 with open(join(this_dir, 'README.md'), encoding='utf-8') as file:
@@ -33,7 +32,7 @@ class RunTests(Command):
 
 setup(
     name='gundala',
-    version=__version__,
+    version='0.1.9',
     description='Gundala Python EPP client',
     long_description=long_description,
     url='https://github.com/BiznetGIO',
