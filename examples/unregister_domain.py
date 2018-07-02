@@ -1,6 +1,7 @@
 from gundala import EPP, Domain
-from config import config, contacts, namespaces
+from config import config, contacts, nameserver
 
 epp = EPP(**config)
-domain = Domain(epp, 'hatiku.id')
+""" Unregister domain. """
+domain = Domain(epp, 'gundala.id')
 domain.delete()

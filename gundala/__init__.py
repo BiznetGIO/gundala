@@ -3,9 +3,11 @@ import argparse
 import socket
 import ssl
 import struct
+import asyncore
+import random
+import string
 from .templates import contact, domain
 from bs4 import BeautifulSoup
-import asyncore
 __version__ = '0.0.1'
 
 
@@ -155,9 +157,12 @@ class Contact(EPPObject):
             return self.handle
 
     def available(self):
-        cmd = contact.available % self
-        res = self.epp.cmd(cmd, silent=True)
-        return res.resdata.find('contact:id').get('avail') == 'true'
+        try:
+            cmd = contact.available % self
+            res = self.epp.cmd(cmd, silent=True)
+            return res.resdata.find('contact:id').get('avail') == 'true'
+        except Exception as e:
+            print('Failed to get contact availability.')
 
     def create(self):
         try:
@@ -165,32 +170,38 @@ class Contact(EPPObject):
             res = self.epp.cmd(cmd).resdata
             return res.find('contact:id').text
         except Exception as e:
-            pass
-
+            print('Failed to create contact.')
 
     def info(self):
-        cmd = contact.info % self
-        res = self.epp.cmd(cmd).resdata
-        self.roid = res.find('contact:roid').text
-        self.status = res.find('contact:status').get('s')
-        self.name = res.find('contact:name').text
         try:
-            self.street = res.find('contact:street').text
-        except AttributeError:
-            pass
-        self.city = res.find('contact:city').text
-        try:
-            self.pc = res.find('contact:pc').text
-        except AttributeError:
-            pass
-        self.cc = res.find('contact:cc').text
-        self.voice = res.find('contact:voice').text
-        self.email = res.find('contact:email').text
-        return self
+            cmd = contact.info % self
+            res = self.epp.cmd(cmd).resdata
+
+            self.roid = res.find('contact:roid').text
+            self.status = res.find('contact:status').get('s')
+            self.name = res.find('contact:name').text
+            try:
+                self.street = res.find('contact:street').text
+            except AttributeError:
+                pass
+            self.city = res.find('contact:city').text
+            try:
+                self.pc = res.find('contact:pc').text
+            except AttributeError:
+                pass
+            self.cc = res.find('contact:cc').text
+            self.voice = res.find('contact:voice').text
+            self.email = res.find('contact:email').text
+            return self
+        except Exception as e:
+            print('Failed to get info.')
 
     def update(self):
-        cmd = contact.update % self
-        return self.epp.cmd(cmd)
+        try:
+            cmd = contact.update % self
+            return self.epp.cmd(cmd)
+        except Exception as e:
+            print('Failed to update contact.')
 
 
 class Domain(EPPObject):
@@ -205,60 +216,77 @@ class Domain(EPPObject):
         return "[%(domain)s] status: %(status)s, registrant: %(registrant)s, admin: %(admin)s, tech: %(tech)s" % self
 
     def available(self):
-        cmd = domain.available % self.domain
-        res = self.epp.cmd(cmd)
-        if not res:
-            # exception would be more fitting
-            return False
-        return res.resdata.find('domain:name').get('avail') == '1'
+        try:
+            cmd = domain.available % self.domain
+            res = self.epp.cmd(cmd)
+            return res.resdata.find('domain:name').get('avail') == '1'
+        except Exception as e:
+            print('Failed to check domain availability.')
 
-    def create(self, contacts, ns):
-        # print(self.token())
-        cmd = domain.create % dict({
-            'domain': self.domain,
-            'ns': ns[0],
-            'registrant': contacts['registrant'],
-            'admin': contacts['admin'],
-            'tech': contacts['tech'],
-            'eppcode': self.token(),
-            'regperiod': 1
-        })
-        res = self.epp.cmd(cmd)
+    def create(self, contacts, ns, period=1, eppcode=None):
+        try:
+            if not eppcode:
+                eppcode = ''.join(random.choice(string.ascii_uppercase +
+                                          string.ascii_lowercase +
+                                          string.digits +
+                                          '!@#$%^&*()') for _ in range(10))
+
+            cmd = domain.create % dict({
+                'domain': self.domain,
+                'ns': ns[0],
+                'registrant': contacts['registrant'],
+                'admin': contacts['admin'],
+                'tech': contacts['tech'],
+                'eppcode': eppcode,
+                'regperiod': period
+            })
+            res = self.epp.cmd(cmd)
+        except Exception as e:
+            print('Failed to register domain.')
 
     def delete(self, undo=False):
-        if undo:
-            cmd = domain.canceldelete % self.domain
-        else:
-            cmd = domain.delete % self.domain
-        return self.epp.cmd(cmd)
+        try:
+            if undo:
+                cmd = domain.canceldelete % self.domain
+            else:
+                cmd = domain.delete % self.domain
+            return self.epp.cmd(cmd)
+        except Exception as e:
+            print('Failed to unregister domain.')
 
     def info(self):
-        cmd = domain.info % self.domain
-        res = self.epp.cmd(cmd).resdata
-        self.roid = res.find('domain:roid').text
-        self.status = res.find('domain:status').get('s')
-        self.registrant = Contact(self.epp, res.find('domain:registrant').text)
-        self.admin = Contact(self.epp, res.find(
-            'domain:contact', type='admin').text)
-        self.tech = Contact(self.epp, res.find(
-            'domain:contact', type='tech').text)
-        return self
+        try:
+            cmd = domain.info % self.domain
+            res = self.epp.cmd(cmd).resdata
+            self.roid = res.find('domain:roid').text
+            self.status = res.find('domain:status').get('s')
+            self.registrant = Contact(
+                self.epp, res.find('domain:registrant').text)
+            self.admin = Contact(self.epp, res.find(
+                'domain:contact', type='admin').text)
+            self.tech = Contact(self.epp, res.find(
+                'domain:contact', type='tech').text)
+            return self
+        except Exception as e:
+            print('Failed to get domain info.')
 
     def token(self):
-        cmd = domain.info % self.domain
-        res = self.epp.cmd(cmd)
-        # print(res)
-        if res.resdata:
+        try:
+            cmd = domain.info % self.domain
+            res = self.epp.cmd(cmd)
             return res.resdata.find('domain:pw').text
-        else:
-            return 'Get Token failed'
+        except Exception as e:
+            print('Failed to get token.')
 
     def transfer(self, token):
-        cmd = domain.transfer % dict({
-            'domain': self.domain,
-            'token': token,
-        })
-        return self.epp.cmd(cmd)
+        try:
+            cmd = domain.transfer % dict({
+                'domain': self.domain,
+                'token': token,
+            })
+            return self.epp.cmd(cmd)
+        except Exception as e:
+            print('Failed to transfer domain.')
 
 
 class Nameserver(EPPObject):
@@ -270,6 +298,9 @@ class Nameserver(EPPObject):
         return self.nameserver
 
     def get_ip(self):
-        cmd = domain.nameserver % self.nameserver
-        res = self.epp.cmd(cmd)
-        return res.resdata.find('host:addr').text
+        try:
+            cmd = domain.nameserver % self.nameserver
+            res = self.epp.cmd(cmd)
+            return res.resdata.find('host:addr').text
+        except Exception as e:
+            print('Failed to get ip address.')

@@ -2,6 +2,6 @@ from gundala import EPP, Domain
 from config import config
 
 epp = EPP(**config)
-""" Get the token for a given domain """
-domain = Domain(epp, 'segokucing.id')
-print(domain.available())
+""" Get the availability for a given domain. """
+domain = Domain(epp, 'gundala.id')
+print('Domain is available' if domain.available() else 'Domain is not available')

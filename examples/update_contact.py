@@ -1,7 +1,5 @@
 from gundala import EPP, Contact
-from config import config, contacts, namespaces
-
-epp = EPP(**config)
+from config import config, contacts, nameserver
 
 data = {
     'name': 'Admin 2 updated',
@@ -15,6 +13,7 @@ data = {
     'fax': '',
     'email': 'admin@biznetgio.com',
 }
-
+epp = EPP(**config)
+""" Update contact. """
 contact = Contact(epp, 7654322, **data)
 print(contact.update())
