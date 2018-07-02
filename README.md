@@ -7,6 +7,14 @@ EPP Library
 At the time gundala only support Python3 or newer.
 
 ``` bash
+pip3 install -U gundala
+```
+
+If you want to stay on bleeding edge version. Grab the code then
+install it manually, using :
+
+``` bash
+pip3 install -r requierment.txt
 pip3 install -e .
 ```
 
