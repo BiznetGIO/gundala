@@ -33,7 +33,7 @@ class EPP(asyncore.dispatcher):
             print("ERROR: Could not setup a secure connection.")
             print("Check whether your IP is allowed to connect to the host.")
             exit(1)
-        self.format_32 = self.format_32()
+        # self.format_32 = self.format_32()
         self.login()
 
     def __del__(self):
