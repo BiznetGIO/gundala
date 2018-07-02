@@ -1,4 +1,3 @@
-
 import argparse
 import socket
 import ssl
@@ -6,14 +5,14 @@ import struct
 import asyncore
 import random
 import string
-from .templates import contact, domain
-from bs4 import BeautifulSoup
-__version__ = '0.0.1'
-
+__version__ = '0.1.8'
 
 class EPP(asyncore.dispatcher):
 
     def __init__(self, **kwargs):
+        from .templates import contact, domain
+        from bs4 import BeautifulSoup
+
         asyncore.dispatcher.__init__(self)
         self.config = kwargs
         self.connected = False
