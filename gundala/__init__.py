@@ -5,14 +5,12 @@ import struct
 import asyncore
 import random
 import string
-__version__ = '0.1.8'
+from .templates import contact, domain
+from bs4 import BeautifulSoup
 
 class EPP(asyncore.dispatcher):
 
     def __init__(self, **kwargs):
-        from .templates import contact, domain
-        from bs4 import BeautifulSoup
-
         asyncore.dispatcher.__init__(self)
         self.config = kwargs
         self.connected = False
@@ -47,6 +45,7 @@ class EPP(asyncore.dispatcher):
             pass
 
     # http://www.bortzmeyer.org/4934.html
+    
     def format_32(self):
         # Get the size of C integers. We need 32 bits unsigned.
         format_32 = ">I"
