@@ -1,6 +1,8 @@
 # GUNDALA PROJECT
 
-EPP Library
+Gundala is an [EPP](https://en.wikipedia.org/wiki/Extensible_Provisioning_Protocol) 
+(Extensible Provisioning Protocol) Client. It's provide a way to communicate 
+between domain name registries and domain name registrars.
 
 ## Installing
 
