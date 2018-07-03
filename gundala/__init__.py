@@ -33,8 +33,9 @@ class EPP(asyncore.dispatcher):
             print("ERROR: Could not setup a secure connection.")
             print("Check whether your IP is allowed to connect to the host.")
             exit(1)
-        # self.format_32 = self.format_32()
+        self.format_32 = self.format_32()
         self.login()
+        asyncore.loop()
 
     def __del__(self):
         try:
@@ -45,7 +46,7 @@ class EPP(asyncore.dispatcher):
             pass
 
     # http://www.bortzmeyer.org/4934.html
-    
+
     def format_32(self):
         # Get the size of C integers. We need 32 bits unsigned.
         format_32 = ">I"
