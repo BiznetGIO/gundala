@@ -32,7 +32,7 @@ class RunTests(Command):
 
 setup(
     name='gundala',
-    version='0.2.0',
+    version='0.2.1',
     description='Gundala Python EPP client',
     long_description=long_description,
     url='https://github.com/BiznetGIO',
