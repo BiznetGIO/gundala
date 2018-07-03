@@ -28,6 +28,29 @@ Duplicate file config.py.example to config.py
 cp example/config.py.example example/config.py
 ```
 
+```python
+
+config = {
+    'host': 'someprovider.com',
+    'port': 700,
+    'user': 'username',
+    'pass': 'password',
+    'cert': 'somecertificate.pem'
+}
+
+contacts = {
+    'registrant': 'idregistrant',
+    'admin': 'idadmin',
+    'tech': 'idtech',
+}
+
+namespaces = [
+    'ns1.someprovider.com',
+    'ns2.someprovider.com'
+]
+
+```
+
 ## Running
 
 ``` bash
