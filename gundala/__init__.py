@@ -84,10 +84,6 @@ class EPP(asyncore.dispatcher):
             return False
         if code == 2502:
             return False
-        # try:
-        #     code = int(result.get('code'))
-        # except Exception as err:
-        #     print(err)
         return response
 
     def read(self):
